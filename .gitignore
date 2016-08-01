@@ -1,6 +1,1 @@
-__pycache__
-build
-dist
-pyirsdk.egg-info
-MANIFEST
 *.pyc

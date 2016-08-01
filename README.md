@@ -1,26 +1,16 @@
-# Python iRacing SDK
+# Python iRacing Tire monitor
 
-Python 3 implementation of iRacing SDK can:
+## Install
 
-- Get session data (WeekendInfo, SessionInfo, etc...)
-- Get live telemetry data (Speed, FuelLevel, etc...)
-- Broadcast messages (camera, replay, chat, pit and telemetry commands)
-
-# Install
-
-- [Python 3.4+](https://www.python.org/downloads/)
-- [PyYaml 3.11+](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml)
-- add `X:\Python34\Scripts` directory to your `PATH` environment variable
-- `pip3 install pyirsdk`
+- Python 2.7
+- PyYaml: http://pyyaml.org/wiki/PyYAML#DownloadandInstallation
+- `pip install -r requirements`
 
 # Usage
 
-```python
-#!python3
-import irsdk
-ir = irsdk.IRSDK()
-ir.startup()
-print(ir['Speed'])
-```
+    python tiremonir.py
 
-Go to [tutorials](tutorials) for more.
+# pyirsdk
+
+TireMonIR embeds a modified version of https://github.com/kutu/pyirsdk and is
+based on a fork of that work.
