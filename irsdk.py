@@ -1,12 +1,10 @@
-#!python3
-
 import re
 import argparse
 import mmap
 import struct
 import ctypes
 import yaml
-from urllib import request
+import requests
 from yaml.reader import Reader as YamlReader
 
 try:
@@ -24,8 +22,10 @@ BROADCASTMSGNAME = 'IRSDK_BROADCASTMSG'
 
 VAR_TYPE_MAP = ['c', '?', 'i', 'I', 'f', 'd']
 
+
 class StatusField:
     status_connected = 1
+
 
 class EngineWarnings:
     water_temp_warning    = 0x01
@@ -34,6 +34,7 @@ class EngineWarnings:
     engine_stalled        = 0x08
     pit_speed_limiter     = 0x10
     rev_limiter_active    = 0x20
+
 
 class Flags:
     # global flags
@@ -67,12 +68,14 @@ class Flags:
     start_set    = 0x40000000
     start_go     = 0x80000000
 
+
 class TrkLoc:
     not_in_world    = -1
     off_track       = 0
     in_pit_stall    = 1
     aproaching_pits = 2
     on_track        = 3
+
 
 class SessionState:
     invalid     = 0
@@ -175,8 +178,8 @@ class FFBCommandMode: # You can call this any time
     ffb_command_max_force = 0 # Set the maximum force when mapping steering torque force to direct input units (float in Nm)
 
 
+class IRSDKStruct(object):
 
-class IRSDKStruct:
     @classmethod
     def property_value(cls, offset, var_type):
         struct_type = struct.Struct(var_type)
@@ -210,7 +213,7 @@ class Header(IRSDKStruct):
     buf_len = IRSDKStruct.property_value(36, 'i')
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(Header, self).__init__(*args, **kwargs)
 
         self.var_buf = [
             VarBuffer(self._shared_mem, 48 + i * 16)
@@ -222,7 +225,7 @@ class VarBuffer(IRSDKStruct):
     buf_offset = IRSDKStruct.property_value(4, 'i')
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(VarBuffer, self).__init__(*args, **kwargs)
         self._freezed_memory = None
 
     def freeze(self):
@@ -375,7 +378,7 @@ class IRSDK:
         return self._broadcast_msg(BroadcastMsg.replay_search_session_time, session_num, session_time_ms)
 
     def _check_sim_status(self):
-        return 'running:1' in request.urlopen(SIM_STATUS_URL).read().decode('utf-8')
+        return 'running:1' in requests.get(SIM_STATUS_URL).content
 
     @property
     def _var_buffer_latest(self):
